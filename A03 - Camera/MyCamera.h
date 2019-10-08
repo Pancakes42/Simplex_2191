@@ -28,6 +28,10 @@ class MyCamera
 
 	matrix4 m_m4View; //View matrix
 	matrix4 m_m4Projection; //Projection Matrix
+
+	float m_fAngleY = 0.0f;
+	float m_fAngleX = 0.0f;
+
 public:
 	/*
 	USAGE: Constructor
@@ -230,6 +234,22 @@ public:
 	OUTPUT: ---
 	*/
 	void MoveSideways(float a_fDistance = 0.1f);
+
+	void RotYaw(float a_fAngle);
+	/*
+	USAGE:changes the yaw of the camera 
+	ARGUMENTS: float a_fAngle -> amount of rotation
+	OUTPUT: ---
+	*/
+
+	void RotPitch(float a_fAngle);
+	/*
+	USAGE:changes the pitch of the camera
+	ARGUMENTS: float a_fAngle -> amount of rotation
+	OUTPUT: ---
+	*/
+
+	void RotCam(float a_fAngleX, float a_fAngleY);
 };
 
 } //namespace Simplex
