@@ -153,10 +153,38 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 void MyCamera::MoveForward(float a_fDistance)
 {
 	//The following is just an example and does not take in account the forward vector (AKA view vector)
-	m_v3Position += vector3(0.0f, 0.0f,-a_fDistance);
-	m_v3Target += vector3(0.0f, 0.0f, -a_fDistance);
-	m_v3Above += vector3(0.0f, 0.0f, -a_fDistance);
+	vector3 viewVector = m_v3Target - m_v3Position;
+	viewVector = glm::normalize(viewVector);
+	viewVector *= -a_fDistance;
+
+	m_v3Position += viewVector;
+	m_v3Target += viewVector;
+	m_v3Above += viewVector;
 }
 
-void MyCamera::MoveVertical(float a_fDistance){}//Needs to be defined
-void MyCamera::MoveSideways(float a_fDistance){}//Needs to be defined
+void MyCamera::MoveVertical(float a_fDistance){
+	vector3 upVector = m_v3Above - m_v3Position;
+	upVector = glm::normalize(upVector);
+	upVector *= a_fDistance;
+
+	m_v3Position += upVector;
+	m_v3Target += upVector;
+	m_v3Above += upVector;
+
+}//Needs to be defined
+void MyCamera::MoveSideways(float a_fDistance){
+	vector3 viewVector = m_v3Target - m_v3Position;
+	float swap;
+	swap = viewVector.x;
+	viewVector.x = viewVector.z;
+	viewVector.z = swap;
+	viewVector.y = 0;
+	
+	viewVector = glm::normalize(viewVector);
+	viewVector *= -a_fDistance;
+
+	m_v3Position += viewVector;
+	m_v3Target += viewVector;
+	m_v3Above += viewVector;
+
+}//Needs to be defined
