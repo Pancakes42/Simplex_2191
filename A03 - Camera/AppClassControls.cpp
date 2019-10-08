@@ -370,6 +370,7 @@ void Application::CameraRotation(float a_fSpeed)
 	}
 	//Change the Yaw and the Pitch of the camera
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
+	
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
@@ -390,6 +391,8 @@ void Application::ProcessKeyboard(void)
 		m_pCamera->MoveForward(fSpeed);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		m_pCamera->MoveForward(-fSpeed);
+	
+	
 #pragma endregion
 }
 //Joystick
