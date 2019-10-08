@@ -220,13 +220,5 @@ void MyCamera::RotCam(float a_fAngleX, float a_fAngleY) {
 	//m_fAngleY += a_fAngleY / 5;
 	//m_v3Target.y = m_v3Target.y - sin(a_fAngleY / 5);
 
-	float Axis = PI;
-
-	m_fAngleX += a_fAngle;
-
-	vector3 step = vector3(0.0f, 0.0f, 1.0f);
-	step = glm::rotateY(step, m_fAngleX);
-	m_v3Target = step + m_v3Position;
-	m_v3Target.y = m_v3Position.y;
-	m_v3Target.y = m_v3Target.y - sin(m_fAngleY);
+	
 }
