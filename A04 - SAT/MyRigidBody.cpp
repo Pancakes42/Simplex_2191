@@ -232,8 +232,13 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 	//if they are colliding check the SAT
 	if (bColliding)
 	{
-		if(SAT(a_pOther) != eSATResults::SAT_NONE)
+		
+
+		if (SAT(a_pOther) != eSATResults::SAT_NONE) {
 			bColliding = false;// reset to false
+		}
+		
+			
 	}
 
 	if (bColliding) //they are colliding
@@ -287,6 +292,96 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	(eSATResults::SAT_NONE has a value of 0)
 	*/
 
-	//there is no axis test that separates this two objects
-	return eSATResults::SAT_NONE;
+	//getting the difference between the center of the two objects
+	vector3 T = (a_pOther->GetCenterGlobal() - GetCenterGlobal());
+	
+	
+	vector3 cases[15];
+	//initializing array of possible seperating planes
+	cases[0] = glm::normalize(m_m4ToWorld * vector4(1,0,0,0));
+	cases[1] = glm::normalize(m_m4ToWorld * vector4(0, 1, 0, 0));
+	cases[2] = glm::normalize(m_m4ToWorld * vector4(0, 0, 1, 0));
+	cases[3] = glm::normalize(a_pOther->m_m4ToWorld * vector4(1, 0, 0, 0));
+	cases[4] = glm::normalize(a_pOther->m_m4ToWorld * vector4(0, 1, 0, 0));
+	cases[5] = glm::normalize(a_pOther->m_m4ToWorld * vector4(0, 0, 1, 0));
+	cases[6] = glm::cross(cases[0],cases[3]);
+	cases[7] = glm::cross(cases[0], cases[4]);
+	cases[8] = glm::cross(cases[0], cases[5]);
+	cases[9] = glm::cross(cases[1], cases[3]);
+	cases[10] = glm::cross(cases[1], cases[4]);
+	cases[11] = glm::cross(cases[1], cases[5]);
+	cases[12] = glm::cross(cases[2], cases[3]);
+	cases[13] = glm::cross(cases[2], cases[4]);
+	cases[14] = glm::cross(cases[2], cases[5]);
+
+	bool colliding = true;
+	int seperatingAxis = -1;
+
+	for (int i = 0; i < 15; i++) {
+		//this is the algorithm that tests projections of each shape on each plane, and sees if they are intersecting
+		//if they are not intersecting, it gives the current index
+		if (glm::abs(glm::dot(T, cases[i])) > glm::abs(glm::dot((m_v3ARBBSize.x / 2) * cases[0], cases[i])) +
+			glm::abs(glm::dot((m_v3ARBBSize.y / 2) * cases[1], cases[i])) +
+			glm::abs(glm::dot((m_v3ARBBSize.z / 2) * cases[2], cases[i])) +
+			glm::abs(glm::dot((a_pOther->m_v3ARBBSize.x / 2) * cases[3], cases[i])) +
+			glm::abs(glm::dot((a_pOther->m_v3ARBBSize.y / 2) * cases[4], cases[i])) +
+			glm::abs(glm::dot((a_pOther->m_v3ARBBSize.z / 2) * cases[5], cases[i]))) {
+
+			
+			seperatingAxis = i;
+
+		}
+		
+	}
+	
+
+	switch(seperatingAxis) {
+	case 0:
+		return eSATResults::SAT_AX;
+		break;
+	case 1:
+		return eSATResults::SAT_AY;
+		break;
+	case 2:
+		return eSATResults::SAT_AZ;
+		break;
+	case 3:
+		return eSATResults::SAT_BX;
+		break;
+	case 4:
+		return eSATResults::SAT_BY;
+		break;
+	case 5:
+		return eSATResults::SAT_BZ;
+		break;
+	case 6:
+		return eSATResults::SAT_AXxBX;
+		break;
+	case 7:
+		return eSATResults::SAT_AXxBY;
+		break;
+	case 8:
+		return eSATResults::SAT_AXxBZ;
+		break;
+	case 9:
+		return eSATResults::SAT_AYxBX;
+		break;
+	case 10:
+		return eSATResults::SAT_AYxBY;
+		break;
+	case 11:
+		return eSATResults::SAT_AYxBZ;
+		break;
+	case 12:
+		return eSATResults::SAT_AZxBX;
+		break;
+	case 13:
+		return eSATResults::SAT_AZxBY;
+		break;
+	case 14:
+		return eSATResults::SAT_AZxBY;
+		break;
+	default:
+		return eSATResults::SAT_NONE;
+	}
 }
