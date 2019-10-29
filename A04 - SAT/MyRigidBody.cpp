@@ -314,6 +314,8 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	cases[13] = glm::cross(cases[2], cases[4]);
 	cases[14] = glm::cross(cases[2], cases[5]);
 
+	//T = vector3(glm::dot(T, cases[0]), glm::dot(T, cases[1]), glm::dot(T, cases[2]));
+
 	bool colliding = true;
 	int seperatingAxis = -1;
 
@@ -326,10 +328,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 			glm::abs(glm::dot((a_pOther->m_v3ARBBSize.x / 2) * cases[3], cases[i])) +
 			glm::abs(glm::dot((a_pOther->m_v3ARBBSize.y / 2) * cases[4], cases[i])) +
 			glm::abs(glm::dot((a_pOther->m_v3ARBBSize.z / 2) * cases[5], cases[i]))) {
-
-			
 			seperatingAxis = i;
-
 		}
 		
 	}
