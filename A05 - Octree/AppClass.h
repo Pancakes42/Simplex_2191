@@ -12,12 +12,17 @@ Date: 2017/06
 
 #include "MyEntityManager.h"
 
+#include "Simplex/Physics/Octant.h"
+
+#include "MyOctant.h"
+
 namespace Simplex
 {
 	//Adding Application to the Simplex namespace
 class Application
 {
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
+	MyOctant* m_pRoot = nullptr;
 	uint m_uOctantID = -1; //Index of Octant to display
 	uint m_uObjects = 0; //Number of objects in the scene
 	uint m_uOctantLevels = 0; //Number of levels in the octree
@@ -58,6 +63,9 @@ private:
 	sf::SoundBuffer m_soundBuffer; //buffer to play sound from
 	sf::Sound m_sound; //sound effect
 	sf::Music m_soundBGM; //background music
+
+	
+	
 
 public:
 #pragma region Constructor / Run / Destructor
