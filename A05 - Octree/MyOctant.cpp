@@ -78,7 +78,6 @@ void MyOctant::ConstructList(void)
 {
 	for (uint c = 0; c < m_uChildren; c++) {
 		m_pChild[c]->ConstructList();
-
 	}
 
 	if (m_EntityList.size() > 0) {
@@ -156,22 +155,24 @@ vector3 Simplex::MyOctant::GetMaxGlobal(void)
 
 void MyOctant::Display(uint a_nIndex, vector3 a_v3Color)
 {
-	if (m_uID == a_nIndex) {
+	if (m_uLevel == a_nIndex) {
 		m_pMeshMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_v3Center)
 		* glm::scale(vector3(m_fSize)), a_v3Color,RENDER_WIRE);
 		return;
 	}
 
 	for (uint i = 0; i < m_uChildren; i++) {
-		m_lChild[i]->Display(a_nIndex, a_v3Color);
+		m_pChild[i]->Display(a_nIndex, a_v3Color);
 	}
 
 }
 
 void MyOctant::Display(vector3 a_v3color) {
 	for (uint i = 0; i < m_uChildren; i++) {
-		m_lChild[i]->Display(a_v3color);
+		m_pChild[i]->Display(a_v3color);
 	}
+
+	
 
 	m_pMeshMngr->AddWireCubeToRenderList(glm::translate(IDENTITY_M4, m_v3Center)
 		* glm::scale(vector3(m_fSize)), a_v3color, RENDER_WIRE);
@@ -181,8 +182,8 @@ void MyOctant::Display(vector3 a_v3color) {
 void Simplex::MyOctant::DisplayLeafs(vector3 a_v3Color)
 {
 	for (uint i = 0; i < m_uChildren; i++) {
-		if (!m_lChild[i]->IsLeaf()) {
-			m_lChild[i]->DisplayLeafs(a_v3Color);
+		if (!m_pChild[i]->IsLeaf()) {
+			m_pChild[i]->DisplayLeafs(a_v3Color);
 		}
 	}
 
@@ -305,6 +306,9 @@ void MyOctant::Subdivide(void) {
 		return;
 	}
 
+	
+
+
 	m_uChildren = 8;
 
 	float fSize = m_fSize / 4.0f;
@@ -312,7 +316,7 @@ void MyOctant::Subdivide(void) {
 	vector3 v3Center;
 
 	//First Child (Bottom Left Back)
-	v3Center = m_v3Center;
+	v3Center = vector3(m_v3Center.x,m_v3Center.y,m_v3Center.z);
 	v3Center.x -= fSize;
 	v3Center.y -= fSize;
 	v3Center.z -= fSize;
@@ -320,6 +324,7 @@ void MyOctant::Subdivide(void) {
 	//Bottom Left Back
 	m_pChild[0] = new MyOctant(v3Center, fSizeD);
 	
+
 	//Bottom Right Back
 	v3Center.x += fSizeD;
 	m_pChild[1] = new MyOctant(v3Center, fSizeD);
